@@ -3,10 +3,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeToPng</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h2>VS Code Style => PNG (using Shiki)</h2>
+  <header class="header">
+    <h1>CodeToPng</h1>
+    <p class="subtitle">Convert code into clean VSCode style images</p>
+  </header>
 
   <div class="controls">
     <select id="lang">
@@ -14,20 +18,36 @@
       <option value="typescript">TypeScript</option>
       <option value="python">Python</option>
       <option value="java">Java</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+      <option value="csharp">C#</option>
+      <option value="go">Go</option>
+      <option value="rust">Rust</option>
+      <option value="php">PHP</option>
+      <option value="ruby">Ruby</option>
+      <option value="swift">Swift</option>
+      <option value="kotlin">Kotlin</option>
+      <option value="dart">Dart</option>
+      <option value="scala">Scala</option>
+      <option value="bash">Bash</option>
+      <option value="json">JSON</option>
+      <option value="html">HTML</option>
+      <option value="css">CSS</option>
+      <option value="sql">SQL</option>
     </select>
     <button id="convertBtn">Convert</button>
-    <button id="downloadBtn" disabled>Download PNG</button>
+    <button id="downloadBtn" disabled>Download</button>
   </div>
 
-  <textarea id="input" placeholder="Paste your code here..."></textarea>
-  <p>use Full-screen for wider png width</p>
-
   <div id="previewWrapper"></div>
-  <img id="output" class="hidden" alt="Generated PNG preview" />
+  <textarea id="input" placeholder="Paste your code here..."></textarea>
+  <div id="loading" class="loading hidden">Rendering image...</div>
+  <img id="output" class="hidden" alt="Generated PNG" />
+  <footer class="footer">
+    <p>Built by <a href="https://github.com/zionabyrke">zionabyrke</a> with Shiki lib • CodeToPng</p>
+  </footer>
 
-  <!-- html2canvas (load once) -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <!-- App logic (ESM for Shiki) -->
   <script type="module" src="script.js"></script>
 </body>
 </html>

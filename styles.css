@@ -1,28 +1,39 @@
 :root {
   --bg: #0d1117;
-  --panel: #1e1e1e;
-  --input: #161b22;
-  --text: #c9d1d9;
+  --panel: #161b22;
   --accent: #238636;
+  --text: #c9d1d9;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+  font-family: system-ui, sans-serif;
   background: var(--bg);
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  gap: 12px;
+  gap: 16px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #8b949e;
 }
 
 .controls {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 select, button {
@@ -33,7 +44,7 @@ select, button {
 }
 
 select {
-  background: var(--input);
+  background: var(--panel);
   color: var(--text);
 }
 
@@ -51,14 +62,21 @@ button:disabled {
 textarea {
   width: 90%;
   height: 220px;
-  background: var(--input);
+  background: var(--panel);
   color: var(--text);
   border: none;
   padding: 14px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 14px;
+  font-family: monospace;
   border-radius: 10px;
-  outline: none;
+}
+
+.loading {
+  font-size: 14px;
+  color: #8b949e;
+}
+
+.hidden {
+  display: none;
 }
 
 #previewWrapper {
@@ -79,6 +97,8 @@ img {
   border-radius: 10px;
 }
 
-.hidden {
-  display: none;
+.footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #8b949e;
 }
