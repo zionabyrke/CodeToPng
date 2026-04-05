@@ -9,21 +9,30 @@ const previewWrapper = document.getElementById('previewWrapper');
 const langSelect = document.getElementById('lang');
 
 let highlighter = null;
+let loadedLangs = new Set();
 let lastDataUrl = '';
 
 async function initHighlighter(){
   if(highlighter) return highlighter;
   highlighter = await getHighlighter({
-    themes: [githubDark],
-    langs: ['javascript', 'typescript', 'python', 'java']
+    themes: [githubDark]
   });
   return highlighter;
+}
+
+async function ensureLanguageLoaded(lang){
+  if(loadedLangs.has(lang)) return;
+  await highlighter.loadLanguage(lang);
+  loadedLangs.add(lang);
 }
 
 async function renderHighlighted(){
   const code = input.value || '';
   const lang = langSelect.value;
   const hl = await initHighlighter();
+
+  //load only selected language
+  await ensureLanguageLoaded(lang);
 
   const html = hl.codeToHtml(code, {
     lang,
@@ -37,8 +46,8 @@ async function renderHighlighted(){
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
   previewWrapper.style.width = 'auto';
   const rect = pre.getBoundingClientRect();
-  const exactWidth = rect.width;
-  previewWrapper.style.width = Math.ceil(exactWidth) + 'px';
+  const exactWidth = Math.ceil(rect.width);
+  previewWrapper.style.width = exactWidth + 'px';
 }
 
 async function convertToImage(){
@@ -56,9 +65,7 @@ async function convertToImage(){
       backgroundColor: '#1e1e1e',
       scale: 3,
       width: Math.ceil(rect.width),
-      height: Math.ceil(rect.height),
-      x: 0,
-      y: 0
+      height: Math.ceil(rect.height)
     });
 
     lastDataUrl = canvas.toDataURL('image/png');
@@ -96,7 +103,10 @@ input.addEventListener('input', () => {
   }, 300);
 });
 
-// initial render
+// preload default language for better UX
 initHighlighter()
-  .then(() => renderHighlighted())
+  .then(h => {
+    const defaultLang = langSelect.value;
+    return ensureLanguageLoaded(defaultLang).then(renderHighlighted);
+  })
   .catch(console.error);
