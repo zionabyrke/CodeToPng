@@ -62,17 +62,16 @@ textarea {
 }
 
 #previewWrapper {
-  width: 1000px; /* or 1200px / 1400px */
-  max-width: 95vw;
-  background: var(--panel);
-  border-radius: 12px;
-  padding: 24px 32px;
-  overflow-x: auto;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  background: #1e1e1e;
 }
 
-/* Shiki outputs <pre><code> with inline styles */
 #previewWrapper pre {
-  font-size: 16px; /* increase from 14px */
+  margin: 0;
+  display: inline-block;
+  white-space: pre;
 }
 
 img {

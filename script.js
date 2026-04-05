@@ -1,12 +1,14 @@
 import { getHighlighter } from 'https://esm.sh/shiki@1.0.0?bundle';
 import githubDark from 'https://esm.sh/shiki@1.0.0/themes/github-dark.mjs';
 
+const input = document.getElementById('input');
+const output = document.getElementById('output');
 const convertBtn = document.getElementById('convertBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 const previewWrapper = document.getElementById('previewWrapper');
 const langSelect = document.getElementById('lang');
 
-let highlighter;
+let highlighter = null;
 let lastDataUrl = '';
 
 async function initHighlighter(){
@@ -28,6 +30,15 @@ async function renderHighlighted(){
     theme: 'github-dark'
   });
   previewWrapper.innerHTML = html;
+
+  const pre = previewWrapper.querySelector('pre');
+  if(!pre) return;
+
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  previewWrapper.style.width = 'auto';
+  const rect = pre.getBoundingClientRect();
+  const exactWidth = rect.width;
+  previewWrapper.style.width = Math.ceil(exactWidth) + 'px';
 }
 
 async function convertToImage(){
@@ -35,21 +46,25 @@ async function convertToImage(){
   downloadBtn.disabled = true;
   output.src = '';
 
-  try{
+  try {
     await renderHighlighted();
-
-    // ensure layout is painted
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const pre = previewWrapper.querySelector('pre');
+    const rect = pre.getBoundingClientRect();
 
     const canvas = await html2canvas(previewWrapper, {
       backgroundColor: '#1e1e1e',
-      scale: 3
+      scale: 3,
+      width: Math.ceil(rect.width),
+      height: Math.ceil(rect.height),
+      x: 0,
+      y: 0
     });
 
     lastDataUrl = canvas.toDataURL('image/png');
     output.src = lastDataUrl;
-    output.classList.remove('hidden'); // show
-    output.classList.add('hidden');    // hide
+    output.classList.remove('hidden');
+
     downloadBtn.disabled = false;
   } catch (e){
     console.error(e);
@@ -70,12 +85,18 @@ function downloadImage() {
 convertBtn.addEventListener('click', convertToImage);
 downloadBtn.addEventListener('click', downloadImage);
 
-// optional: live preview debounce (no image generation)
+// live preview
 let t;
 input.addEventListener('input', () => {
   clearTimeout(t);
-  t = setTimeout(() => renderHighlighted(), 300);
+  output.classList.add('hidden');
+
+  t = setTimeout(() => {
+    renderHighlighted().catch(console.error);
+  }, 300);
 });
 
-// initial empty render
-initHighlighter().then(renderHighlighted);
+// initial render
+initHighlighter()
+  .then(() => renderHighlighted())
+  .catch(console.error);
